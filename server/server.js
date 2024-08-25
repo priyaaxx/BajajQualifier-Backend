@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-// Utility function to validate input data
-const validateInputData = (data) => {
-    return Array.isArray(data) && data.every(item => typeof item === 'string' || !isNaN(item));
-};
+// Redirect root URL to /bfhl
+app.get('/', (req, res) => {
+    res.redirect('/bfhl');
+});
 
 // Endpoint for GET request
 app.get('/bfhl', (req, res) => {
@@ -26,11 +26,10 @@ app.post('/bfhl', (req, res) => {
     try {
         const { data } = req.body;
 
-        // Input validation
-        if (!data || !validateInputData(data)) {
+        if (!data || !Array.isArray(data)) {
             return res.status(400).json({
                 is_success: false,
-                message: 'Invalid input data. Data should be an array of strings or numbers.'
+                message: 'Invalid input data'
             });
         }
 
@@ -38,7 +37,6 @@ app.post('/bfhl', (req, res) => {
         const alphabets = [];
         let highestLowercaseAlphabet = null;
 
-        // Processing the data
         data.forEach(item => {
             if (!isNaN(item)) {
                 numbers.push(item);
@@ -52,10 +50,9 @@ app.post('/bfhl', (req, res) => {
             }
         });
 
-        // Successful response
         res.status(200).json({
             is_success: true,
-            user_id: "priya_gopal_01042003", // Replace with dynamic logic if needed
+            user_id: "priya_gopal_01042003",
             email: "priya.gopal2021@vitbhopal.ac.in",
             roll_number: "21BAI10248",
             numbers,
@@ -64,7 +61,6 @@ app.post('/bfhl', (req, res) => {
         });
 
     } catch (error) {
-        // General error handling
         res.status(500).json({
             is_success: false,
             message: 'Internal server error'
